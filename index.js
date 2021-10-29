@@ -123,7 +123,7 @@ app.get('/', (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at vs code sync otpion ${port}`);
+  console.log(`Example app listening at vs code dsdsasda ${port}`);
 });
 
 // tYoy3JREwYOeTNbH;
