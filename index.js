@@ -38,6 +38,16 @@ async function run() {
       res.json(allDestinations);
     });
 
+    // get single destination for placeorder
+
+    app.get('/destinations/:placeOrderId', async (req, res) => {
+      const orderId = req.params.placeOrderId;
+
+      const placeOrderQuery = { _id: ObjectId(orderId) };
+      const result = await destinationsCollection.findOne(placeOrderQuery);
+      res.json(result);
+    });
+
     // GET single user destinations
 
     app.get('/user/destinations/:email', async (req, res) => {
