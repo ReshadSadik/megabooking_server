@@ -22,7 +22,7 @@ async function run() {
     const destinationsCollection = database.collection('destinations');
     const usersCollection = database.collection('users');
 
-    // POST an event
+    // add a destination
 
     app.post('/destination', async (req, res) => {
       const postDestination = req.body;
@@ -49,7 +49,7 @@ async function run() {
       res.json(result);
     });
 
-    // GET single user destinations
+    // GET single user all destinations
 
     app.get('/user/destinations/:email', async (req, res) => {
       const loggedUserEmail = req.params.email;
@@ -70,11 +70,20 @@ async function run() {
       res.json(results);
     });
 
+    // delete single user deestination
+
+    // app.delete('/userDestination/:id', async (req, res) => {
+    //   const deleteId = req.params.id;
+    //   const deleteQuery = { _id: ObjectId(des) };
+    //   const result= await usersCollection.
+
+    // });
+
     // ADD or UPDATE  user info
 
     app.put('/newdestination', async (req, res) => {
       const updatedUserInfo = req.body;
-
+      console.log(updatedUserInfo);
       const query = { userEmail: updatedUserInfo.email };
 
       const userInformation = (await usersCollection.findOne(query)) || {};
@@ -96,6 +105,7 @@ async function run() {
       const updateDoc = {
         $set: {
           userEmail: updatedUserInfo.email,
+          userOtherData: updatedUserInfo.userData,
           userDestinationId: newAddedDestinations,
         },
       };
