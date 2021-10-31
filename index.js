@@ -53,69 +53,41 @@ async function run() {
 
     app.get('/user/destinations/:email', async (req, res) => {
       const loggedUserEmail = req.params.email;
-      // const loggedUserInfo = req.body;
-      const query = { userEmail: loggedUserEmail };
-      const getUserInfo = await usersCollection.findOne(query);
-      const query2 = getUserInfo.userDestinationId;
 
-      const results = [];
-      for (const des of query2) {
-        const query3 = { _id: ObjectId(des) };
-        const newResult = await destinationsCollection.findOne(query3);
-        results.push(newResult);
-      }
+      const query = { email: loggedUserEmail };
 
-      const result = await destinationsCollection.find(query2);
-      // console.log(results);
-      res.json(results);
+      const getUserInfo = await usersCollection.find(query).toArray();
+      console.log(getUserInfo);
+      res.json(getUserInfo);
     });
+    // GET single user single destinations
 
+    app.get('/events/:destinationId', async (req, res) => {
+      const singleDestinationId = req.params.destinationId;
+
+      const query = { _id: ObjectId(singleDestinationId) };
+
+      const result = await destinationsCollection.findOne(query);
+      res.json(result);
+    });
     // delete single user deestination
 
-    // app.delete('/userDestination/:id', async (req, res) => {
-    //   const deleteId = req.params.id;
-    //   const deleteQuery = { _id: ObjectId(des) };
-    //   const result= await usersCollection.
-
-    // });
+    app.delete('/userDestination/:id', async (req, res) => {
+      const deleteId = req.params.id;
+      console.log(deleteId);
+      const deleteQuery = { _id: ObjectId(deleteId) };
+      const result = await usersCollection.deleteOne(deleteQuery);
+      res.json(result);
+    });
 
     // ADD or UPDATE  user info
 
-    app.put('/newdestination', async (req, res) => {
+    app.post('/newdestination', async (req, res) => {
       const updatedUserInfo = req.body;
-      console.log(updatedUserInfo);
-      const query = { userEmail: updatedUserInfo.email };
 
-      const userInformation = (await usersCollection.findOne(query)) || {};
+      const userPostResult = await usersCollection.insertOne(updatedUserInfo);
 
-      const filter = { userEmail: updatedUserInfo.email };
-
-      const options = { upsert: true };
-
-      let newAddedDestinations = [];
-      if (userInformation.userEmail) {
-        newAddedDestinations = [
-          ...userInformation.userDestinationId,
-          updatedUserInfo.destinationId,
-        ];
-      } else {
-        newAddedDestinations = [updatedUserInfo.destinationId];
-      }
-
-      const updateDoc = {
-        $set: {
-          userEmail: updatedUserInfo.email,
-          userOtherData: updatedUserInfo.userData,
-          userDestinationId: newAddedDestinations,
-        },
-      };
-
-      const updateResult = await usersCollection.updateOne(
-        filter,
-        updateDoc,
-        options
-      );
-      res.json(updateResult);
+      res.json(userPostResult);
     });
   } finally {
     // await client.close();
