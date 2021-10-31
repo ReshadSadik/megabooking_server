@@ -49,6 +49,24 @@ async function run() {
       res.json(result);
     });
 
+    // update data status
+
+    app.put('/handlePending/:id', async (req, res) => {
+      const id = req.params.id;
+
+      const filter = { _id: ObjectId(id) };
+
+      const updateDoc = {
+        $set: {
+          status: 'Approved',
+        },
+      };
+
+      const result = await usersCollection.updateOne(filter, updateDoc);
+
+      res.json(result);
+    });
+
     // GET single user all destinations
 
     app.get('/user/destinations/:email', async (req, res) => {
@@ -88,6 +106,14 @@ async function run() {
       const userPostResult = await usersCollection.insertOne(updatedUserInfo);
 
       res.json(userPostResult);
+    });
+
+    // get all user all destination
+
+    app.get('/allusers', async (req, res) => {
+      const result = await usersCollection.find().toArray();
+
+      res.json(result);
     });
   } finally {
     // await client.close();
