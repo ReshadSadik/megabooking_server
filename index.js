@@ -39,7 +39,7 @@ async function run() {
       res.json(allDestinations);
     });
 
-    // get single destination for placeorder
+    // get single destination for placeorder to
 
     app.get('/destinations/:placeOrderId', async (req, res) => {
       const orderId = req.params.placeOrderId;
